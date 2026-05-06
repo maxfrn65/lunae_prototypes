@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lunae-onboarding",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "onboarding"],
+      "port": 4173
+    }
+  ]
+}
