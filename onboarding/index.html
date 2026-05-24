@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#8f4ce6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Lunae — Onboarding</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,7 +13,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <aside class="flow-nav" aria-label="Navigation parcours">
+    <!-- Drawer nav backdrop (used on mobile when sidebar is opened) -->
+    <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+
+    <aside class="flow-nav" id="flowNav" aria-label="Navigation parcours">
         <h1 class="flow-nav__title">Lunae · Onboarding</h1>
         <p class="flow-nav__subtitle">Cliquez sur les CTA dans l'écran ou utilisez la liste pour sauter à un écran.</p>
         <ol class="flow-nav__list">
@@ -25,9 +31,11 @@
             <li><button data-goto="calendar-access" class="flow-nav__item">8 · Accès calendriers</button></li>
             <li><button data-goto="import-accounts" class="flow-nav__item">9 · Import calendriers</button></li>
             <li><button data-goto="import-cycle" class="flow-nav__item">10 · Données de cycle</button></li>
-            <li><button data-goto="app-home" class="flow-nav__item">11 · App (vue jour)</button></li>
+            <li><button data-goto="app-home" class="flow-nav__item">11 · Bienvenue !</button></li>
         </ol>
         <button class="flow-nav__reset" id="resetBtn">↺ Recommencer</button>
+        <a class="flow-nav__link" href="../calendar/">Aller au calendrier →</a>
+        <a class="flow-nav__link" href="../">↩ Hub des prototypes</a>
     </aside>
 
     <main class="stage">
@@ -374,67 +382,29 @@
                     </div>
                 </section>
 
-                <!-- App home -->
+                <!-- Bienvenue (final) → calendrier -->
                 <section class="screen" id="app-home" data-screen>
-                    <div class="screen__body app">
-                        <header class="app__header">
-                            <button class="iconbtn iconbtn--ghost" aria-label="Retour">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                            </button>
-                            <div class="app__header-actions">
-                                <button class="iconbtn iconbtn--ghost" aria-label="Recherche">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                </button>
-                                <button class="iconbtn iconbtn--ghost" aria-label="Notifications">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-                                </button>
-                                <button class="iconbtn iconbtn--ghost" aria-label="Paramètres">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                                </button>
+                    <div class="screen__body screen__body--form">
+                        <div class="form__top">
+                            <div class="success__hero">
+                                <div class="success__badge" aria-hidden="true">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L13.5 8.5L19 10L13.5 11.5L12 17L10.5 11.5L5 10L10.5 8.5z"/><path d="M19 17l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/><path d="M5 17l.7 1.7 1.7.7-1.7.7L5 21.8l-.7-1.7-1.7-.7 1.7-.7z"/></svg>
+                                </div>
                             </div>
-                        </header>
-                        <nav class="app__week" aria-label="Sélection de jour">
-                            <button class="app__day">2</button>
-                            <button class="app__day">3</button>
-                            <button class="app__day app__day--with-icon">
-                                <span class="app__day-icon" aria-hidden="true">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8f4ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                                </span>
-                                4
-                            </button>
-                            <button class="app__day app__day--active">5</button>
-                            <button class="app__day">6</button>
-                            <button class="app__day">7</button>
-                            <button class="app__day">8</button>
-                        </nav>
-                        <div class="app__date-row">
-                            <h3 class="app__date">Lundi 5 mai</h3>
-                            <span class="app__phase">Phase folliculaire</span>
-                        </div>
-                        <div class="app__schedule">
-                            <div class="app__hour"><span>09:00</span><div class="app__line"></div></div>
-                            <div class="app__hour"><span>10:00</span><div class="app__line"></div></div>
-                            <div class="app__event">
-                                <span class="app__event-time">10:30 — 11:30</span>
-                                <span class="app__event-title">Stand-up équipe</span>
+                            <div class="form__heading">
+                                <h2 class="slide__title">Tout est prêt, Jane !</h2>
+                                <p class="form__subtitle">Votre agenda Lunae est configuré et synchronisé avec votre cycle. Place à votre premier jour avec un calendrier qui s'adapte à votre énergie.</p>
                             </div>
-                            <div class="app__hour"><span>11:00</span><div class="app__line"></div></div>
-                            <div class="app__hour"><span>12:00</span><div class="app__line"></div></div>
-                            <div class="app__hour"><span>13:00</span><div class="app__line"></div></div>
-                            <div class="app__event app__event--alt">
-                                <span class="app__event-time">14:00 — 15:30</span>
-                                <span class="app__event-title">Atelier créatif</span>
-                            </div>
-                            <div class="app__hour"><span>14:00</span><div class="app__line"></div></div>
-                            <div class="app__hour"><span>15:00</span><div class="app__line"></div></div>
-                            <div class="app__hour"><span>16:00</span><div class="app__line"></div></div>
+                            <ul class="success__list">
+                                <li><span class="success__check">✓</span> 2 calendriers importés (Apple, Google)</li>
+                                <li><span class="success__check">✓</span> Données de cycle synchronisées</li>
+                                <li><span class="success__check">✓</span> Clé d'accès créée</li>
+                            </ul>
                         </div>
-                        <div class="app__success">
-                            <strong>Bienvenue Jane !</strong>
-                            <span>Votre onboarding est terminé. Cet écran représente l'app principale (vue jour/semaine).</span>
-                        </div>
+                        <a href="../calendar/" class="btn btn--primary">Découvrir mon agenda →</a>
                     </div>
                 </section>
+
 
             </div>
 

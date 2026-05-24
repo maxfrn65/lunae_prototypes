@@ -4,6 +4,9 @@
     const resetBtn = document.getElementById('resetBtn');
     const FIRST = 'slide-1';
 
+    // On mobile, the sidebar is hidden entirely on the onboarding (linear flow,
+    // no debug nav). Kept for desktop only — see styles.css.
+
     const showScreen = (id) => {
         if (!id) return;
         const target = document.getElementById(id);
