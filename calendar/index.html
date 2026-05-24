@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#8f4ce6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Lunae — Calendrier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir la navigation" aria-controls="flowNav" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+
+    <aside class="flow-nav" id="flowNav" aria-label="Navigation calendrier">
+        <h1 class="flow-nav__title">Lunae · Calendrier</h1>
+        <p class="flow-nav__subtitle">Cliquez sur les événements et le bouton + dans l'écran, ou utilisez la liste.</p>
+
+        <div class="flow-nav__section">
+            <span class="flow-nav__legend">Vues</span>
+            <ol class="flow-nav__list">
+                <li><button data-view="day" class="flow-nav__item is-active">Vue jour</button></li>
+                <li><button data-view="week" class="flow-nav__item">Vue semaine</button></li>
+                <li><button data-view="month" class="flow-nav__item">Vue mois</button></li>
+            </ol>
+        </div>
+
+        <div class="flow-nav__section">
+            <span class="flow-nav__legend">Modales démo</span>
+            <ol class="flow-nav__list">
+                <li><button data-modal="event-invitation" class="flow-nav__item">Détail · invitation</button></li>
+                <li><button data-modal="event-personal" class="flow-nav__item">Détail · perso (cycle ⚠︎)</button></li>
+                <li><button data-modal="event-course" class="flow-nav__item">Détail · cours</button></li>
+                <li><button data-modal="event-create" class="flow-nav__item">Création / Édition</button></li>
+            </ol>
+        </div>
+
+        <a class="flow-nav__link" href="../onboarding/">← Revoir l'onboarding</a>
+        <a class="flow-nav__link" href="../">↩ Hub des prototypes</a>
+    </aside>
+
+    <main class="stage">
+        <div class="phone" role="region" aria-label="Aperçu mobile">
+            <div class="phone__notch" aria-hidden="true"></div>
+            <div class="phone__statusbar" aria-hidden="true">
+                <span>9:41</span>
+                <span class="phone__statusbar-right">
+                    <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 6.5C1 6.5 3 4 8 4C13 4 15 6.5 15 6.5" stroke="black" stroke-width="1.2" stroke-linecap="round"/><path d="M3.5 8.2C3.5 8.2 5 7 8 7C11 7 12.5 8.2 12.5 8.2" stroke="black" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="9.7" r="0.7" fill="black"/></svg>
+                    <svg width="20" height="10" viewBox="0 0 20 10" fill="none"><rect x="0.5" y="0.5" width="16" height="9" rx="2" stroke="black"/><rect x="2" y="2" width="11" height="6" rx="1" fill="black"/><rect x="17" y="3.5" width="1.5" height="3" rx="0.5" fill="black"/></svg>
+                </span>
+            </div>
+
+            <div class="cal" id="calRoot">
+                <header class="cal__header">
+                    <button class="iconbtn iconbtn--ghost" aria-label="Retour" data-href="../onboarding/">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <div class="cal__header-actions">
+                        <button class="iconbtn iconbtn--ghost" aria-label="Recherche">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </button>
+                        <button class="iconbtn iconbtn--ghost" aria-label="Notifications">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                        </button>
+                        <button class="iconbtn iconbtn--ghost" aria-label="Paramètres">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Week strip (shared) -->
+                <nav class="cal__week" aria-label="Sélection de jour">
+                    <button class="cal__day" data-day="2">2</button>
+                    <button class="cal__day" data-day="3">3</button>
+                    <button class="cal__day cal__day--with-icon" data-day="4">
+                        <span class="cal__day-icon" aria-label="Phase ovulatoire">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8f4ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                        </span>
+                        4
+                    </button>
+                    <button class="cal__day cal__day--active" data-day="5">5</button>
+                    <button class="cal__day" data-day="6">6</button>
+                    <button class="cal__day" data-day="7">7</button>
+                    <button class="cal__day" data-day="8">8</button>
+                </nav>
+
+                <!-- DAY VIEW -->
+                <section class="view view--day is-active" data-view="day">
+                    <div class="view__date-row">
+                        <h3 class="view__date">Lundi 5 mai</h3>
+                        <span class="view__phase">Phase folliculaire</span>
+                    </div>
+
+                    <div class="timeline" id="timeline">
+                        <!-- hour markers -->
+                        <div class="timeline__grid">
+                            <div class="timeline__hour"><span>08:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>09:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>10:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>11:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>12:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>13:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>14:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>15:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>16:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>17:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>18:00</span><div class="timeline__line"></div></div>
+                            <div class="timeline__hour"><span>19:00</span><div class="timeline__line"></div></div>
+                        </div>
+
+                        <!-- now indicator (e.g. 10:25) -->
+                        <div class="timeline__now" style="top: 165px;" aria-hidden="true">
+                            <span class="timeline__now-time">10:25</span>
+                            <div class="timeline__now-line"></div>
+                        </div>
+
+                        <!-- events absolutely positioned (60px per hour, start = 08:00 → top 0) -->
+                        <article class="event event--big event--purple" style="top: 32px; height: 76px;" data-event="event-invitation">
+                            <header>
+                                <strong>Présentation d'épic ⭐️</strong>
+                                <span class="event__icons" aria-hidden="true">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                                </span>
+                            </header>
+                            <span class="event__sub">08:30 — 09:45 · Visio Meet</span>
+                        </article>
+
+                        <article class="event event--declined" style="top: 124px; height: 36px;" data-event="event-personal">
+                            <header><strong>Événement décliné</strong></header>
+                            <span class="event__sub">10:05 — 10:35 · Lieu</span>
+                        </article>
+
+                        <article class="event event--suggestion" style="top: 168px; height: 36px;" data-event="event-personal">
+                            <header>
+                                <strong>Stand-up équipe <span class="event__dot" aria-label="Suggestion IA"></span></strong>
+                            </header>
+                            <span class="event__sub">10:30 — 11:00 · Slack</span>
+                        </article>
+
+                        <article class="event event--invitation" style="top: 210px; height: 36px;" data-event="event-invitation">
+                            <header><strong>Invitation à répondre</strong></header>
+                            <span class="event__sub">11:00 — 11:30 · Lieu</span>
+                        </article>
+
+                        <article class="event event--small event--small-left event--purple" style="top: 256px; height: 36px;" data-event="event-personal">
+                            <header><strong>Café</strong></header>
+                            <span class="event__sub">11:45 — 12:15</span>
+                        </article>
+
+                        <article class="event event--travel" style="top: 320px; height: 80px;" data-event="event-course">
+                            <span class="event__travel">🚌 15 min de temps de trajet</span>
+                            <header><strong>Cours · Cloud</strong></header>
+                            <span class="event__sub">13:30 — 15:00 · CROIX salle 004</span>
+                        </article>
+
+                        <article class="event event--pink" style="top: 460px; height: 60px;" data-event="event-personal">
+                            <header><strong>Boxe 🥊</strong></header>
+                            <span class="event__sub">15:30 — 16:30 · Salle perso</span>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- WEEK VIEW -->
+                <section class="view view--week" data-view="week">
+                    <div class="view__date-row">
+                        <h3 class="view__date">Semaine du 5 mai</h3>
+                        <span class="view__phase">Folliculaire</span>
+                    </div>
+                    <div class="week-grid">
+                        <div class="week-col">
+                            <span class="week-col__label">L 5</span>
+                            <div class="week-col__events">
+                                <span class="week-pill week-pill--purple" data-event="event-invitation" title="Présentation d'épic">Présentation</span>
+                                <span class="week-pill week-pill--pink" data-event="event-personal" title="Boxe 🥊">Boxe 🥊</span>
+                            </div>
+                        </div>
+                        <div class="week-col">
+                            <span class="week-col__label">M 6</span>
+                            <div class="week-col__events">
+                                <span class="week-pill week-pill--orange" data-event="event-course">Cours</span>
+                            </div>
+                        </div>
+                        <div class="week-col">
+                            <span class="week-col__label">M 7</span>
+                            <div class="week-col__events">
+                                <span class="week-pill week-pill--purple" data-event="event-personal">Stand-up</span>
+                                <span class="week-pill week-pill--orange" data-event="event-course">Cours</span>
+                                <span class="week-pill week-pill--purple" data-event="event-invitation">1:1</span>
+                            </div>
+                        </div>
+                        <div class="week-col">
+                            <span class="week-col__label">J 8</span>
+                            <div class="week-col__events">
+                                <span class="week-pill week-pill--orange" data-event="event-course">Cours</span>
+                            </div>
+                        </div>
+                        <div class="week-col">
+                            <span class="week-col__label">V 9</span>
+                            <div class="week-col__events">
+                                <span class="week-pill week-pill--purple" data-event="event-invitation">Démo</span>
+                            </div>
+                        </div>
+                        <div class="week-col week-col--weekend">
+                            <span class="week-col__label">S 10</span>
+                        </div>
+                        <div class="week-col week-col--weekend">
+                            <span class="week-col__label">D 11</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MONTH VIEW -->
+                <section class="view view--month" data-view="month">
+                    <div class="view__date-row view__date-row--month">
+                        <h3 class="view__date">Mai 2026</h3>
+                        <div class="month-nav">
+                            <button class="iconbtn iconbtn--ghost iconbtn--sm" aria-label="Mois précédent">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                            </button>
+                            <button class="iconbtn iconbtn--ghost iconbtn--sm" aria-label="Mois suivant">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="month-grid">
+                        <div class="month-grid__head">L</div>
+                        <div class="month-grid__head">M</div>
+                        <div class="month-grid__head">M</div>
+                        <div class="month-grid__head">J</div>
+                        <div class="month-grid__head">V</div>
+                        <div class="month-grid__head">S</div>
+                        <div class="month-grid__head">D</div>
+                    </div>
+                    <div class="month-grid" id="monthGrid"></div>
+                    <p class="month-legend">
+                        <span class="month-legend__dot month-legend__dot--menstruel"></span> Menstruel
+                        <span class="month-legend__dot month-legend__dot--folliculaire"></span> Folliculaire
+                        <span class="month-legend__dot month-legend__dot--ovulatoire"></span> Ovulatoire
+                        <span class="month-legend__dot month-legend__dot--luteale"></span> Lutéale
+                    </p>
+                </section>
+
+                <!-- DOCK -->
+                <footer class="cal__dock">
+                    <button class="cal__dock-btn cal__dock-btn--active" data-action="today">Aujourd'hui</button>
+                    <button class="cal__dock-btn" data-action="calendars">Calendriers</button>
+                    <button class="cal__fab" data-modal="event-create" aria-label="Nouvel événement">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </footer>
+            </div>
+
+            <!-- ===================== MODALS ===================== -->
+
+            <!-- Event detail: invitation -->
+            <div class="modal" id="event-invitation" data-modal-overlay>
+                <div class="modal__sheet">
+                    <header class="modal__head">
+                        <span class="modal__handle" aria-hidden="true"></span>
+                        <button class="iconbtn iconbtn--ghost modal__close" aria-label="Fermer" data-close>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </header>
+                    <div class="modal__body">
+                        <div class="event-detail__title-row">
+                            <h2 class="event-detail__title">Présentation d'épic ⭐️</h2>
+                            <span class="badge badge--ok">✓ Compatible cycle</span>
+                        </div>
+                        <div class="event-detail__meta">
+                            <div class="meta-row">
+                                <span class="meta-row__label">Calendrier</span>
+                                <span class="meta-row__value"><span class="cal-dot cal-dot--blue"></span> FEE Team</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Quand</span>
+                                <span class="meta-row__value">Lun. 5 mai · 08:30 — 09:45</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Localisation</span>
+                                <span class="meta-row__value">Bureau Lille — Salle Orion</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Visioconférence</span>
+                                <button class="link">Rejoindre Google Meet</button>
+                            </div>
+                        </div>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Notes</h3>
+                            <p class="event-detail__notes">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna.</p>
+                        </section>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Invités · 6</h3>
+                            <div class="invitees">
+                                <div class="invitee"><span class="invitee__avatar" style="background:#f78dba">JD</span> Jane Doe</div>
+                                <div class="invitee"><span class="invitee__avatar" style="background:#8f4ce6">JD</span> John Doe</div>
+                                <div class="invitee"><span class="invitee__avatar" style="background:#ffb27a">LD</span> Leonardo Dicaprio</div>
+                                <button class="link">Voir les 6 invités</button>
+                            </div>
+                        </section>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Pièces jointes · 2</h3>
+                            <div class="attachments">
+                                <div class="attachment">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    File1.pdf
+                                </div>
+                                <div class="attachment">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    File2.pdf
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <footer class="modal__footer modal__footer--actions">
+                        <button class="btn btn--ghost btn--inline">Refuser</button>
+                        <button class="btn btn--ghost btn--inline">Peut-être</button>
+                        <button class="btn btn--primary btn--inline">Accepter</button>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Event detail: personnel boxe (incompatible cycle) -->
+            <div class="modal" id="event-personal" data-modal-overlay>
+                <div class="modal__sheet">
+                    <header class="modal__head">
+                        <span class="modal__handle" aria-hidden="true"></span>
+                        <button class="iconbtn iconbtn--ghost modal__close" aria-label="Fermer" data-close>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </header>
+                    <div class="modal__body">
+                        <div class="event-detail__title-row">
+                            <h2 class="event-detail__title">Boxe 🥊</h2>
+                            <span class="badge badge--warn">⚠ Incompatible cycle</span>
+                        </div>
+                        <div class="event-detail__meta">
+                            <div class="meta-row">
+                                <span class="meta-row__label">Calendrier</span>
+                                <span class="meta-row__value"><span class="cal-dot cal-dot--purple"></span> Personnel</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Quand</span>
+                                <span class="meta-row__value">Lun. 5 mai · 15:30 — 16:30</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Occurence</span>
+                                <span class="meta-row__value">Hebdomadaire</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Localisation</span>
+                                <span class="meta-row__value">135 rue Sadi Carnot · 59790 Ronchin</span>
+                            </div>
+                        </div>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Notes</h3>
+                            <p class="event-detail__notes">Mon premier sparing ! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi.</p>
+                        </section>
+
+                        <section class="ai-suggestion">
+                            <span class="ai-suggestion__icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L13.5 8.5L19 10L13.5 11.5L12 17L10.5 11.5L5 10L10.5 8.5z"/><path d="M19 17l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/><path d="M5 17l.7 1.7 1.7.7-1.7.7L5 21.8l-.7-1.7-1.7-.7 1.7-.7z"/></svg>
+                            </span>
+                            <div class="ai-suggestion__body">
+                                <p>Nous vous recommandons de déplacer l'événement <strong>Boxe</strong> pendant la phase <strong>ovulatoire</strong> de votre cycle, où votre énergie sera maximale.</p>
+                                <button class="link">En savoir plus</button>
+                                <div class="ai-suggestion__actions">
+                                    <button class="btn btn--ghost btn--inline">Ignorer</button>
+                                    <button class="btn btn--primary btn--inline">Déplacer</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <footer class="modal__footer modal__footer--actions">
+                        <button class="btn btn--ghost btn--inline btn--danger">Supprimer</button>
+                        <button class="btn btn--primary btn--inline" data-modal="event-create">Modifier</button>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Event detail: cours -->
+            <div class="modal" id="event-course" data-modal-overlay>
+                <div class="modal__sheet">
+                    <header class="modal__head">
+                        <span class="modal__handle" aria-hidden="true"></span>
+                        <button class="iconbtn iconbtn--ghost modal__close" aria-label="Fermer" data-close>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </header>
+                    <div class="modal__body">
+                        <div class="event-detail__title-row">
+                            <h2 class="event-detail__title">Développer pour le cloud</h2>
+                            <span class="badge badge--neutral">Non concerné · cycle</span>
+                        </div>
+                        <div class="event-detail__meta">
+                            <div class="meta-row">
+                                <span class="meta-row__label">Calendrier</span>
+                                <span class="meta-row__value"><span class="cal-dot cal-dot--orange"></span> Cours</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Quand</span>
+                                <span class="meta-row__value">Lun. 5 mai · 13:30 — 15:00</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Intervenant</span>
+                                <span class="meta-row__value">Brad Pitt</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Classe</span>
+                                <span class="meta-row__value">Lille · DEVFLSTK MAST2 · FFP</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-row__label">Salle</span>
+                                <span class="meta-row__value">CROIX · Salle 004 RDC</span>
+                            </div>
+                        </div>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Notes</h3>
+                            <p class="event-detail__notes">Matière : Développer pour le cloud. Apportez votre laptop avec Docker installé.</p>
+                        </section>
+
+                        <section class="event-detail__section">
+                            <h3 class="event-detail__h3">Pièces jointes · 1</h3>
+                            <div class="attachments">
+                                <div class="attachment">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    File1.pdf
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <footer class="modal__footer modal__footer--actions">
+                        <button class="btn btn--ghost btn--inline">Se désinscrire</button>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Event create / edit -->
+            <div class="modal" id="event-create" data-modal-overlay>
+                <div class="modal__sheet modal__sheet--full">
+                    <header class="modal__head modal__head--bar">
+                        <button class="link" data-close>Annuler</button>
+                        <span class="modal__head-title">Modifier l'événement</span>
+                        <button class="link link--strong" data-close>Enregistrer</button>
+                    </header>
+                    <div class="modal__body modal__body--form">
+                        <input type="text" class="event-form__title" value="Boxe 🥊">
+
+                        <section class="event-form__group">
+                            <div class="row">
+                                <span class="row__label">Compte</span>
+                                <span class="row__value">
+                                    jane.doe@gmail.com
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 15 12 20 17 15"/><polyline points="17 9 12 4 7 9"/></svg>
+                                </span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Calendrier</span>
+                                <span class="row__value">
+                                    <span class="cal-dot cal-dot--purple"></span> Personnel
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 15 12 20 17 15"/><polyline points="17 9 12 4 7 9"/></svg>
+                                </span>
+                            </div>
+                        </section>
+
+                        <section class="event-form__group">
+                            <div class="row">
+                                <span class="row__label">Jour entier</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="switch__slider"></span>
+                                </label>
+                            </div>
+                            <div class="row row--active">
+                                <span class="row__label">Début</span>
+                                <span class="row__value">04/03/26 · 15:30</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Fin</span>
+                                <span class="row__value">04/03/26 · 16:30</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Rappel</span>
+                                <span class="row__value">30 min. avant ›</span>
+                            </div>
+                        </section>
+
+                        <section class="event-form__group">
+                            <div class="row">
+                                <span class="row__label">Occurence</span>
+                                <span class="row__value">Hebdomadaire ›</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Date de fin</span>
+                                <span class="row__value">07/06/26 ›</span>
+                            </div>
+                        </section>
+
+                        <section class="event-form__group">
+                            <div class="row">
+                                <span class="row__label">Invités</span>
+                                <span class="row__value">3 ›</span>
+                            </div>
+                            <div class="row row--multiline">
+                                <span class="row__label">Adresse</span>
+                                <span class="row__value row__value--right">57 rue du Faubourg Saint-Honoré 75001 Paris ›</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Salle</span>
+                                <span class="row__value">009 ›</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Visioconférence</span>
+                                <span class="row__value">Google Meet ›</span>
+                            </div>
+                            <div class="row">
+                                <span class="row__label">Pièces jointes</span>
+                                <span class="row__value">2 ›</span>
+                            </div>
+                        </section>
+
+                        <section class="ai-suggestion">
+                            <span class="ai-suggestion__icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L13.5 8.5L19 10L13.5 11.5L12 17L10.5 11.5L5 10L10.5 8.5z"/><path d="M19 17l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/><path d="M5 17l.7 1.7 1.7.7-1.7.7L5 21.8l-.7-1.7-1.7-.7 1.7-.7z"/></svg>
+                            </span>
+                            <div class="ai-suggestion__body">
+                                <p>Nous vous recommandons de déplacer l'événement <strong>Boxe</strong> pendant la phase <strong>ovulatoire</strong> de votre cycle.</p>
+                                <button class="link">En savoir plus</button>
+                                <div class="ai-suggestion__actions">
+                                    <button class="btn btn--ghost btn--inline">Ignorer</button>
+                                    <button class="btn btn--primary btn--inline">Déplacer</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phone__home" aria-hidden="true"></div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
